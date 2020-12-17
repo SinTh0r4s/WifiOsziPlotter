@@ -48,23 +48,9 @@ class BoardInfoDisplay(Frame):
         self.board_var.set(info.model)
         self.adc_var.set(info.adc)
         self.resolution_var.set(str(info.resolution) + " bits")
-        if info.frequency > 1000000000:
-            self.frequency_var.set(to_one_decimal(info.frequency / 1000000000) + " GHz")
-        elif info.frequency > 1000000:
-            self.frequency_var.set(to_one_decimal(info.frequency / 1000000) + " MHz")
-        elif info.frequency > 1000:
-            self.frequency_var.set(to_one_decimal(info.frequency / 1000) + " kHz")
-        else:
-            self.frequency_var.set(to_one_decimal(info.frequency) + " Hz")
+        self.frequency_var.set(to_one_decimal(info.frequency) + " " + info.frequency_unit)
         self.samples_var.set(info.samples)
-        if info.sample_time < 0.000001:
-            self.sample_time_var.set(to_one_decimal(info.sample_time * 1000000000) + " ns")
-        elif info.sample_time < 0.001:
-            self.sample_time_var.set(to_one_decimal(info.sample_time * 1000000) + " µs")
-        elif info.sample_time < 1:
-            self.sample_time_var.set(to_one_decimal(info.sample_time / 1000) + " ms")
-        else:
-            self.sample_time_var.set(to_one_decimal(info.frequency) + " s")
+        self.sample_time_var.set(to_one_decimal(info.sample_time) + " " + info.sample_time_unit)
         self.v_ref_var.set(str(info.v_ref) + " mV")
 
 

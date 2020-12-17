@@ -1,0 +1,1 @@
+Due to a bug in matplotlib it is required to use an older version:	matplotlib 2.2.2
