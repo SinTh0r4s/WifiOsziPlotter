@@ -1,4 +1,5 @@
 from typing import List
+from Util import get_bytes_per_sample
 import struct
 
 magic_number: int = 7567
@@ -37,9 +38,9 @@ class BeaconHeader:
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
-        if len(bytearray) != 84:
+        if len(buffer) != 84:
             return False
-        if bytearray[0:1] != magic_number.to_bytes(2, little_endian):
+        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
             return False
         self.resolution = buffer[2]
         self.channels = buffer[3]
@@ -74,13 +75,13 @@ class CommandHeader:
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
-        if len(bytearray) < 14:
+        if len(buffer) < 14:
             return False
-        if bytearray[0:1] != magic_number.to_bytes(2, little_endian):
+        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
             return False
         self.port = int.from_bytes(buffer[2:5], little_endian)
         self.num_settings = int.from_bytes(buffer[6:7], little_endian)
-        if len(bytearray) != 8 + 6 * self.num_settings:
+        if len(buffer) != 8 + 6 * self.num_settings:
             return False
         self.trigger_setting_headers = [None] * self.num_settings
         for i in range(self.num_settings):
@@ -122,9 +123,10 @@ class SampleTransmissionHeader:
         self.frequency: int = 0
         self.v_ref: int = 0
         self.num_samples: int = 0
+        self.payload: bytearray = bytearray(0)
 
     def to_bytearray(self) -> bytearray:
-        buffer = bytearray(18)
+        buffer = bytearray(18 + len(self.payload))
         buffer[0:1] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.frame_id
         buffer[3] = self.num_frames
@@ -133,12 +135,13 @@ class SampleTransmissionHeader:
         buffer[6:9] = self.frequency.to_bytes(4, little_endian)
         buffer[10:13] = self.v_ref.to_bytes(4, little_endian)
         buffer[14:17] = self.num_samples.to_bytes(4, little_endian)
+        buffer[18:] = self.payload
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
-        if len(bytearray) < 18:
+        if len(buffer) < 18:
             return False
-        if bytearray[0:1] != magic_number.to_bytes(2, little_endian):
+        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
             return False
         self.frame_id = buffer[2]
         self.num_frames = buffer[3]
@@ -147,4 +150,21 @@ class SampleTransmissionHeader:
         self.frequency = int.from_bytes(buffer[6:9], little_endian)
         self.v_ref = int.from_bytes(buffer[10:13], little_endian)
         self.num_samples = int.from_bytes(buffer[14:17], little_endian)
+        if len(buffer) != 18 + self.num_samples * get_bytes_per_sample(self.resolution):
+            return False
+        self.payload = buffer[18:]
         return True
+
+    def compare(self, other):
+        if self.num_frames != other.num_frames:
+            return False
+        if self.resolution != other.resolution:
+            return False
+        if self.channels != other.channels:
+            return False
+        if self.frequency != other.frequency:
+            return False
+        if self.v_ref != other.v_ref:
+            return False
+        return True
+
