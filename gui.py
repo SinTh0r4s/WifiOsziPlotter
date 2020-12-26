@@ -6,6 +6,7 @@ import numpy as np
 from BoardInfoDisplay import BoardInfoDisplay
 from SamplePlotter import SamplePlotter
 from BoardInfo import BoardInfo
+from Network import Network
 
 master = Tk()
 master.wm_title("Wifi Oszi")
@@ -29,5 +30,17 @@ s = SamplePlotter(master=master)
 s.pack(side=LEFT)
 s.refresh(info, np.arange(0, 3300, 3300 / info.samples))
 s.reset()
+
+
+def draw(data):
+    print("draw")
+    print(data)
+    print(len(data[0]))
+
+def update_boards():
+    print("update boards")
+
+network = Network(draw, update_boards)
+master.after(100, network.handle_events)
 
 master.mainloop()
