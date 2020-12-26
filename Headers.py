@@ -21,9 +21,10 @@ class BeaconHeader:
         self.sample_time: float = 0.0
         self.v_ref: int = 0
         self.port: int = 0
+        self.uid: int = 0
 
     def to_bytearray(self) -> bytearray:
-        buffer = bytearray(85)
+        buffer = bytearray(87)
         buffer[0:1] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.resolution
         buffer[3] = self.channels
@@ -37,6 +38,7 @@ class BeaconHeader:
         buffer[73:76] = f
         buffer[77:80] = self.v_ref.to_bytes(4, little_endian)
         buffer[81:84] = self.port.to_bytes(4, little_endian)
+        buffer[85:86] = self.uid.to_bytes(2, little_endian)
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
@@ -56,6 +58,7 @@ class BeaconHeader:
         self.sample_time = struct.unpack("f", b)
         self.v_ref = int.from_bytes(buffer[77:80], little_endian)
         self.port = int.from_bytes(buffer[81:84], little_endian)
+        self.uid = int.from_bytes(buffer[85:86], little_endian)
         return True
 
 
