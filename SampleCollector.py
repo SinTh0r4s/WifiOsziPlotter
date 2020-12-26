@@ -5,7 +5,7 @@ from typing import Callable
 
 class SampleCollector:
 
-    def __init_(self, draw_callback: Callable):
+    def __init__(self, draw_callback: Callable):
         self.groups: dict[int, SampleGroup] = {}
         self.__draw_callback = draw_callback
 
