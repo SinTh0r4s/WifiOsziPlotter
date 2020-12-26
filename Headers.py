@@ -1,8 +1,8 @@
 from typing import List
 from Util import get_bytes_per_sample
-import struct
+from struct import unpack, pack
 
-magic_number: int = 7567
+magic_number: int = 0x7567
 little_endian: str = "little"
 encoding_utf8: str = "utf-8"
 ignore_errors: str = "ignore"
@@ -25,40 +25,40 @@ class BeaconHeader:
 
     def to_bytearray(self) -> bytearray:
         buffer = bytearray(87)
-        buffer[0:1] = magic_number.to_bytes(2, little_endian)
+        buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.resolution
         buffer[3] = self.channels
         buffer[4] = self.beaconId
-        buffer[5:34] = self.model.encode(encoding_utf8)
-        buffer[35:64] = self.adc.encode(encoding_utf8)
-        buffer[65:68] = self.frequency.to_bytes(4, little_endian)
-        buffer[69:72] = self.num_samples.to_bytes(4, little_endian)
-        f = bytearray(struct.pack("f", self.sample_time))
+        buffer[5:5+len(self.model)] = self.model.encode(encoding_utf8)
+        buffer[35:35+len(self.adc)] = self.adc.encode(encoding_utf8)
+        buffer[65:69] = self.frequency.to_bytes(4, little_endian)
+        buffer[69:73] = self.num_samples.to_bytes(4, little_endian)
+        f = bytearray(pack("f", self.sample_time))
         f.reverse()
-        buffer[73:76] = f
-        buffer[77:80] = self.v_ref.to_bytes(4, little_endian)
-        buffer[81:84] = self.port.to_bytes(4, little_endian)
-        buffer[85:86] = self.uid.to_bytes(2, little_endian)
+        buffer[73:77] = f
+        buffer[77:81] = self.v_ref.to_bytes(4, little_endian)
+        buffer[81:85] = self.port.to_bytes(4, little_endian)
+        buffer[85:87] = self.uid.to_bytes(2, little_endian)
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
-        if len(buffer) != 85:
+        if len(buffer) != 87:
             return False
-        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
+        if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
         self.resolution = buffer[2]
         self.channels = buffer[3]
         self.beaconId = buffer[4]
-        self.model = buffer[5:34].decode(encoding_utf8, ignore_errors)
-        self.adc = buffer[35:64].decode(encoding_utf8, ignore_errors)
-        self.frequency = int.from_bytes(buffer[65:68], little_endian)
-        self.num_samples = int.from_bytes(buffer[69:72], little_endian)
-        b = buffer[73:76]
+        self.model = buffer[5:35].decode(encoding_utf8, ignore_errors).rstrip('\x00')
+        self.adc = buffer[35:65].decode(encoding_utf8, ignore_errors).rstrip('\x00')
+        self.frequency = int.from_bytes(buffer[65:69], little_endian)
+        self.num_samples = int.from_bytes(buffer[69:73], little_endian)
+        b = bytearray(buffer[73:77])
         b.reverse()
-        self.sample_time = struct.unpack("f", b)
-        self.v_ref = int.from_bytes(buffer[77:80], little_endian)
-        self.port = int.from_bytes(buffer[81:84], little_endian)
-        self.uid = int.from_bytes(buffer[85:86], little_endian)
+        self.sample_time, = unpack("f", b)
+        self.v_ref = int.from_bytes(buffer[77:81], little_endian)
+        self.port = int.from_bytes(buffer[81:85], little_endian)
+        self.uid = int.from_bytes(buffer[85:87], little_endian)
         return True
 
 
@@ -72,28 +72,28 @@ class CommandHeader:
     def to_bytearray(self) -> bytearray:
         self.num_settings = len(self.trigger_setting_headers)
         buffer = bytearray(8 + 6 * self.num_settings)
-        buffer[0:1] = magic_number.to_bytes(2, little_endian)
-        buffer[2:5] = self.port.to_bytes(4, little_endian)
-        buffer[6:7] = self.num_settings.to_bytes(2, little_endian)
+        buffer[0:2] = magic_number.to_bytes(2, little_endian)
+        buffer[2:6] = self.port.to_bytes(4, little_endian)
+        buffer[6:8] = self.num_settings.to_bytes(2, little_endian)
         for i in range(self.num_settings):
             offset = 6 * i
-            buffer[8+offset:13+offset] = self.trigger_setting_headers[i].to_bytearray()
+            buffer[8+offset:14+offset] = self.trigger_setting_headers[i].to_bytearray()
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
         if len(buffer) < 14:
             return False
-        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
+        if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
-        self.port = int.from_bytes(buffer[2:5], little_endian)
-        self.num_settings = int.from_bytes(buffer[6:7], little_endian)
+        self.port = int.from_bytes(buffer[2:6], little_endian)
+        self.num_settings = int.from_bytes(buffer[6:8], little_endian)
         if len(buffer) != 8 + 6 * self.num_settings:
             return False
         self.trigger_setting_headers = [None] * self.num_settings
         for i in range(self.num_settings):
             self.trigger_setting_headers[i] = TriggerSettingHeader()
             offset = 6 * i
-            if self.trigger_setting_headers[i].from_bytearray(buffer[8+offset:13+offset]) is False:
+            if self.trigger_setting_headers[i].from_bytearray(buffer[8+offset:14+offset]) is False:
                 return False
         return True
 
@@ -108,13 +108,13 @@ class TriggerSettingHeader:
     def to_bytearray(self) -> bytearray:
         buffer = bytearray(6)
         buffer[0] = self.channel
-        buffer[1:4] = self.trigger_voltage.to_bytes(4, little_endian)
+        buffer[1:5] = self.trigger_voltage.to_bytes(4, little_endian)
         buffer[5] = self.active
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
         self.channel = buffer[0]
-        self.trigger_voltage = int.from_bytes(buffer[1:4], little_endian)
+        self.trigger_voltage = int.from_bytes(buffer[1:5], little_endian)
         self.active = bool(buffer[5])
         return True
 
@@ -134,22 +134,22 @@ class SampleTransmissionHeader:
 
     def to_bytearray(self) -> bytearray:
         buffer = bytearray(19 + len(self.payload))
-        buffer[0:1] = magic_number.to_bytes(2, little_endian)
+        buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.frame_id
         buffer[3] = self.num_frames
         buffer[4] = self.transmission_group_id
         buffer[5] = self.resolution
         buffer[6] = self.channels
-        buffer[7:10] = self.frequency.to_bytes(4, little_endian)
-        buffer[11:14] = self.v_ref.to_bytes(4, little_endian)
-        buffer[15:18] = self.num_samples.to_bytes(4, little_endian)
+        buffer[7:11] = self.frequency.to_bytes(4, little_endian)
+        buffer[11:15] = self.v_ref.to_bytes(4, little_endian)
+        buffer[15:19] = self.num_samples.to_bytes(4, little_endian)
         buffer[19:] = self.payload
         return buffer
 
     def from_bytearray(self, buffer: bytearray) -> bool:
         if len(buffer) < 19:
             return False
-        if buffer[0:1] != magic_number.to_bytes(2, little_endian):
+        if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
         self.frame_id = buffer[2]
         self.num_frames = buffer[3]
@@ -158,9 +158,9 @@ class SampleTransmissionHeader:
         self.transmission_group_id = buffer[4]
         self.resolution = buffer[5]
         self.channels = buffer[6]
-        self.frequency = int.from_bytes(buffer[7:10], little_endian)
-        self.v_ref = int.from_bytes(buffer[11:14], little_endian)
-        self.num_samples = int.from_bytes(buffer[15:18], little_endian)
+        self.frequency = int.from_bytes(buffer[7:11], little_endian)
+        self.v_ref = int.from_bytes(buffer[11:15], little_endian)
+        self.num_samples = int.from_bytes(buffer[15:19], little_endian)
         if len(buffer) != 19 + self.num_samples * get_bytes_per_sample(self.resolution):
             return False
         self.payload = buffer[19:]
@@ -181,3 +181,58 @@ class SampleTransmissionHeader:
             return False
         return True
 
+
+# Tests
+if __name__ == "__main__":
+    beacon = BeaconHeader()
+    beacon.beaconId = 11
+    beacon.v_ref = 3300
+    beacon.port = 12345
+    beacon.num_samples = 10000
+    beacon.sample_time = 0.1
+    beacon.frequency = 100000
+    beacon.resolution = 8
+    beacon.model = "Leona OTP FTW"
+    beacon.channels = 1
+    beacon.uid = 5433
+    beacon.adc = "Just kidding"
+    beacon_bin = beacon.to_bytearray()
+    beacon_copy = BeaconHeader()
+    beacon_copy.from_bytearray(beacon_bin)
+    print("Original beacon: " + str(beacon.__dict__))
+    print("Bin copy beacon: " + str(beacon_copy.__dict__))
+
+    command = CommandHeader()
+    command.port = 1234
+    command.num_settings = 2
+    command.trigger_setting_headers = [TriggerSettingHeader(), TriggerSettingHeader()]
+    command.trigger_setting_headers[0].trigger_voltage = 200
+    command.trigger_setting_headers[0].active = True
+    command.trigger_setting_headers[0].channel = 1
+    command.trigger_setting_headers[0].trigger_voltage = 3000
+    command.trigger_setting_headers[0].active = False
+    command.trigger_setting_headers[0].channel = 4
+    command_bin = command.to_bytearray()
+    command_copy = CommandHeader()
+    command_copy.from_bytearray(command_bin)
+    print("Original command: " + str(command.__dict__))
+    print("Bin copy command: " + str(command_copy.__dict__))
+    for i in range(len(command.trigger_setting_headers)):
+        print("    Original trigger: " + str(command.trigger_setting_headers[i].__dict__))
+        print("    Bin copy trigger: " + str(command_copy.trigger_setting_headers[i].__dict__))
+
+    samples = SampleTransmissionHeader()
+    samples.num_samples = 1
+    samples.v_ref = 3300
+    samples.channels = 1
+    samples.resolution = 8
+    samples.frequency = 100000
+    samples.transmission_group_id = 123
+    samples.num_frames = 1
+    samples.frame_id = 0
+    samples.payload = bytearray(1)
+    samples_bin = samples.to_bytearray()
+    samples_copy = SampleTransmissionHeader()
+    samples_copy.from_bytearray(samples_bin)
+    print("Original samples: " + str(samples.__dict__))
+    print("Bin copy samples: " + str(samples_copy.__dict__))
