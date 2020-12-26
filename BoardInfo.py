@@ -17,6 +17,7 @@ class BoardInfo:
             self.sample_time_unit: str = "sec"
             self.v_ref: int = 0             # mV
             self.uid: int = 0
+            self.ip: str = ""
         else:
             self.model: str = beacon.model
             self.adc: str = beacon.adc
@@ -48,6 +49,7 @@ class BoardInfo:
                 self.sample_time_unit = "ns"
             self.v_ref = beacon.v_ref
             self.uid = beacon.uid
+            self.ip = beacon.address
 
     def is_timeout(self) -> bool:
         if self.timestamp - time() > 3:

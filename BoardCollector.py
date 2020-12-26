@@ -1,6 +1,6 @@
 from BoardInfo import BoardInfo
 from Headers import BeaconHeader
-from typing import Callable
+from typing import Callable, List
 
 
 class BoardCollector:
@@ -21,3 +21,6 @@ class BoardCollector:
             if self.boards[uid].is_timeout():
                 self.boards.pop(uid)
                 self.refresh_boards_callback()
+
+    def get_boards(self) -> List[BoardInfo]:
+        return list(self.boards.values())

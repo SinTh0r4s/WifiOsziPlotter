@@ -8,8 +8,7 @@ import numpy as np
 
 class SampleGroup:
 
-    def __init__(self, group_id: int, header: SampleTransmissionHeader):
-        self.groupId = group_id
+    def __init__(self, header: SampleTransmissionHeader):
         self.samples = [None] * header.num_frames
         self.header = header
         self.bytes_per_sample = get_bytes_per_sample(self.header.resolution)
@@ -49,5 +48,5 @@ class SampleGroup:
         channels = [np.zeros(0)] * self.header.channels
         for segment in self.samples:
             for i in range(self.header.channels):
-                np.append(channels[i], segment[i])
+                channels[i] = np.append(channels[i], segment[i])
         return channels

@@ -22,6 +22,7 @@ class BeaconHeader:
         self.v_ref: int = 0
         self.port: int = 0
         self.uid: int = 0
+        self.address: str = ""
 
     def to_bytearray(self) -> bytearray:
         buffer = bytearray(87)
@@ -41,7 +42,7 @@ class BeaconHeader:
         buffer[85:87] = self.uid.to_bytes(2, little_endian)
         return buffer
 
-    def from_bytearray(self, buffer: bytearray) -> bool:
+    def from_bytearray(self, buffer: bytes) -> bool:
         if len(buffer) != 87:
             return False
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
@@ -67,33 +68,34 @@ class CommandHeader:
     def __init__(self):
         self.port: int = 0
         self.num_settings: int = 0
+        self.address: str = ""
         self.trigger_setting_headers: List[TriggerSettingHeader] = []
 
     def to_bytearray(self) -> bytearray:
         self.num_settings = len(self.trigger_setting_headers)
-        buffer = bytearray(8 + 6 * self.num_settings)
+        buffer = bytearray(7 + 6 * self.num_settings)
         buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2:6] = self.port.to_bytes(4, little_endian)
-        buffer[6:8] = self.num_settings.to_bytes(2, little_endian)
+        buffer[6] = self.num_settings
         for i in range(self.num_settings):
             offset = 6 * i
-            buffer[8+offset:14+offset] = self.trigger_setting_headers[i].to_bytearray()
+            buffer[7+offset:13+offset] = self.trigger_setting_headers[i].to_bytearray()
         return buffer
 
-    def from_bytearray(self, buffer: bytearray) -> bool:
-        if len(buffer) < 14:
+    def from_bytearray(self, buffer: bytes) -> bool:
+        if len(buffer) < 13:
             return False
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
         self.port = int.from_bytes(buffer[2:6], little_endian)
-        self.num_settings = int.from_bytes(buffer[6:8], little_endian)
-        if len(buffer) != 8 + 6 * self.num_settings:
+        self.num_settings = buffer[6]
+        if len(buffer) != 7 + 6 * self.num_settings:
             return False
         self.trigger_setting_headers = [None] * self.num_settings
         for i in range(self.num_settings):
             self.trigger_setting_headers[i] = TriggerSettingHeader()
             offset = 6 * i
-            if self.trigger_setting_headers[i].from_bytearray(buffer[8+offset:14+offset]) is False:
+            if self.trigger_setting_headers[i].from_bytearray(buffer[7+offset:13+offset]) is False:
                 return False
         return True
 
@@ -112,7 +114,7 @@ class TriggerSettingHeader:
         buffer[5] = self.active
         return buffer
 
-    def from_bytearray(self, buffer: bytearray) -> bool:
+    def from_bytearray(self, buffer: bytes) -> bool:
         self.channel = buffer[0]
         self.trigger_voltage = int.from_bytes(buffer[1:5], little_endian)
         self.active = bool(buffer[5])
@@ -130,6 +132,7 @@ class SampleTransmissionHeader:
         self.frequency: int = 0
         self.v_ref: int = 0
         self.num_samples: int = 0
+        self.address: str = ""
         self.payload: bytearray = bytearray(0)
 
     def to_bytearray(self) -> bytearray:
@@ -146,7 +149,7 @@ class SampleTransmissionHeader:
         buffer[19:] = self.payload
         return buffer
 
-    def from_bytearray(self, buffer: bytearray) -> bool:
+    def from_bytearray(self, buffer: bytes) -> bool:
         if len(buffer) < 19:
             return False
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
