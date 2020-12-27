@@ -32,6 +32,11 @@ class BoardEvents:
         for board in BoardEvents._board_list.values():
             if board.is_timeout(timeout=3.5):
                 BoardEvents._board_list.pop(board.uid)
+                if BoardEvents._selected_board == board.uid:
+                    if len(BoardEvents._board_list) > 0:
+                        BoardEvents._selected_board = BoardEvents._board_list[-1].uid
+                    else:
+                        BoardEvents._selected_board = -1
                 BoardEvents._update_listeners()
 
     @classmethod
@@ -40,9 +45,9 @@ class BoardEvents:
             listener.update_boards(BoardEvents._board_list, BoardEvents._selected_board)
 
     @classmethod
-    def update_selected_board(cls, selected_board: int) -> None:
-        BoardEvents._selected_board = selected_board
-        PlotEvents._update_selected_board(selected_board)
+    def update_selected_board(cls, uid: int) -> None:
+        BoardEvents._selected_board = uid
+        PlotEvents._update_selected_board(uid)
 
     # Overwrite this method if you want to react on it
     def update_boards(self, board_list: List[BoardInfo], selected_board: int) -> None:
