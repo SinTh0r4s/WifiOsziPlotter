@@ -15,7 +15,7 @@ class TriggerCommandWidget(QWidget, BoardEvents):
         self._network: Network = network
         self._selected_channel: int = 1
 
-        self._layout = QVBoxLayout(self)
+        self.setLayout(QVBoxLayout())
 
         self._channel_layout = QHBoxLayout()
         self._channel_label = QLabel("Channel")
@@ -24,7 +24,7 @@ class TriggerCommandWidget(QWidget, BoardEvents):
         self._channel_combobox.activated.connect(self._select_channel)
         self._channel_combobox.setDisabled(True)
         self._channel_layout.addWidget(self._channel_combobox)
-        self._layout.addLayout(self._channel_layout)
+        self.layout().addLayout(self._channel_layout)
 
         self._voltage_layout = QHBoxLayout()
         self._voltage_description_label = QLabel("Trigger voltage")
@@ -36,7 +36,7 @@ class TriggerCommandWidget(QWidget, BoardEvents):
         self._voltage_layout.addWidget(self._input)
         self._unit_label = QLabel("mV")
         self._voltage_layout.addWidget(self._unit_label)
-        self._layout.addLayout(self._voltage_layout)
+        self.layout().addLayout(self._voltage_layout)
 
         self._button_layout = QHBoxLayout()
         self._set_button = QPushButton("Set")
@@ -47,7 +47,7 @@ class TriggerCommandWidget(QWidget, BoardEvents):
         self._disarm_button.clicked.connect(self._disarm_trigger)
         self._disarm_button.setDisabled(True)
         self._button_layout.addWidget(self._disarm_button)
-        self._layout.addLayout(self._button_layout)
+        self.layout().addLayout(self._button_layout)
 
     def _set_trigger(self):
         self._network.send_trigger((self._target_ip, self._target_port), 1, True, self._input.value())
