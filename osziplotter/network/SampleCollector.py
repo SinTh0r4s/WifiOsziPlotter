@@ -8,6 +8,7 @@ from typing import Dict
 class SampleCollector(PlotEvents):
 
     def __init__(self):
+        super(SampleCollector, self).__init__()
         self.groups: Dict[int, SampleGroup] = {}
 
     def process_received_sample_transmission_header(self, header: SampleTransmissionHeader) -> None:
