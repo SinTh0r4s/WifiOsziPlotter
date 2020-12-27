@@ -1,6 +1,7 @@
 from osziplotter.Util import get_bytes_per_sample
 from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
+
 from struct import unpack, pack
 
 magic_number: int = 0x7567
@@ -65,38 +66,39 @@ class BeaconHeader:
         return True
 
     def to_board_info(self) -> BoardInfo:
-        info: BoardInfo = BoardInfo()
-        info.model = self.model
-        info.adc = self.adc
-        info.resolution = self.resolution
+        board: BoardInfo = BoardInfo()
+        board.model = self.model
+        board.adc = self.adc
+        board.resolution = self.resolution
         if self.frequency < 1000:
-            info.frequency = self.frequency
-            info.frequency_unit = "Hz"
+            board.frequency = self.frequency
+            board.frequency_unit = "Hz"
         elif self.frequency < 1000000:
-            info.frequency = self.frequency / 1000
-            info.frequency_unit = "kHz"
+            board.frequency = self.frequency / 1000
+            board.frequency_unit = "kHz"
         elif self.frequency < 1000000000:
-            info.frequency = self.frequency / 1000000
-            info.frequency_unit = "MHz"
+            board.frequency = self.frequency / 1000000
+            board.frequency_unit = "MHz"
         else:
-            info.frequency = self.frequency / 1000000000
-            info.frequency_unit = "GHz"
-        info.num_samples = self.num_samples
+            board.frequency = self.frequency / 1000000000
+            board.frequency_unit = "GHz"
+        board.num_samples = self.num_samples
         if self.sample_time > 1.0:
-            info.sample_time = self.sample_time
-            info.sample_time_unit = "s"
+            board.sample_time = self.sample_time
+            board.sample_time_unit = "s"
         elif self.sample_time > 0.001:
-            info.sample_time = self.sample_time * 1000
-            info.sample_time_unit = "ms"
+            board.sample_time = self.sample_time * 1000
+            board.sample_time_unit = "ms"
         elif self.sample_time > 0.000001:
-            info.sample_time = self.sample_time * 1000000
-            info.sample_time_unit = "µs"
+            board.sample_time = self.sample_time * 1000000
+            board.sample_time_unit = "µs"
         else:
-            info.sample_time = self.sample_time * 1000000000
-            info.sample_time_unit = "ns"
-        info.v_ref = self.v_ref
-        info.uid = self.uid
-        info.ip = self.address
+            board.sample_time = self.sample_time * 1000000000
+            board.sample_time_unit = "ns"
+        board.v_ref = self.v_ref
+        board.uid = self.uid
+        board.ip = self.address
+        return board
 
 
 class CommandHeader:
@@ -199,3 +201,4 @@ class SampleTransmissionHeader:
         plot.v_ref = self.v_ref
         plot.num_samples = self.num_samples
         plot.board_uid = self.uid
+        return plot

@@ -1,20 +1,20 @@
-from socket import socket, AF_INET, SOCK_DGRAM, error
-from errno import EAGAIN, EWOULDBLOCK
-from SampleCollector import SampleCollector
+from osziplotter.network.Headers import BeaconHeader, SampleTransmissionHeader, CommandHeader
+from osziplotter.network.SampleCollector import SampleCollector
 from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from osziplotter.modelcontroller.BoardEvents import BoardEvents
-from typing import List
-from Headers import BeaconHeader, SampleTransmissionHeader, CommandHeader
+
+from socket import socket, AF_INET, SOCK_DGRAM, error
+from errno import EAGAIN, EWOULDBLOCK
 
 
 class Network(BoardEvents):
 
     def __init__(self):
         super(Network, self).__init__()
-        self.updateBoardsCallback = None
         self.sample_collector = SampleCollector()
-
         self.socket = socket(AF_INET, SOCK_DGRAM)
+
+    def listen(self) -> None:
         self.socket.bind(("", 7567))
         self.socket.setblocking(False)
 
@@ -35,8 +35,6 @@ class Network(BoardEvents):
             err = e.args[0]
             if err != EAGAIN and err != EWOULDBLOCK:
                 print("Fatal socket error!")
-
-        self.board_collector.handle_events()
 
     def send_trigger(self, target: BoardInfo, channel: int, active: bool, trigger_voltage: int) -> None:
         command = CommandHeader()

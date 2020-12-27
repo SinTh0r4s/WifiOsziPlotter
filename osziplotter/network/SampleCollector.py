@@ -1,8 +1,8 @@
-from SampleGroup import SampleGroup
-from Headers import SampleTransmissionHeader
-from typing import Dict
+from osziplotter.network.SampleGroup import SampleGroup
+from osziplotter.network.Headers import SampleTransmissionHeader
 from osziplotter.modelcontroller.PlotEvents import PlotEvents
-from osziplotter.modelcontroller.PlotInfo import PlotInfo
+
+from typing import Dict
 
 
 class SampleCollector(PlotEvents):

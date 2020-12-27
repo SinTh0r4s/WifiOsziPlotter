@@ -1,13 +1,12 @@
 # Enable recursive typing for python 3.7+ (from 3.10 it is build-in)
 from __future__ import annotations
 
-from osziplotter.network.Headers import BeaconHeader
 from time import time
 
 
 class BoardInfo:
 
-    def __init__(self, beacon: BeaconHeader = None):
+    def __init__(self):
         self.timestamp: float = time()
         self.model: str = "unknown"
         self.adc: str = "integrated"

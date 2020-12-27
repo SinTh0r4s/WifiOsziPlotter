@@ -1,8 +1,9 @@
 # Enable recursive typing for python 3.7+ (from 3.10 it is build-in)
 from __future__ import annotations
 
+from osziplotter.modelcontroller.PlotInfo import PlotInfo
+
 from typing import Dict, Type, List
-from PlotInfo import PlotInfo
 
 
 class PlotEvents:

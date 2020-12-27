@@ -1,8 +1,9 @@
-from Headers import SampleTransmissionHeader
-from time import time
-from osziplotter.Util import get_bytes_per_sample
-from math import floor
+from osziplotter.network.Headers import SampleTransmissionHeader
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
+from osziplotter.Util import get_bytes_per_sample
+
+from math import floor
+from time import time
 import numpy as np
 
 
