@@ -4,7 +4,7 @@ from SampleCollector import SampleCollector
 from BoardCollector import BoardCollector
 from BoardInfo import BoardInfo
 from typing import Callable, List
-from Headers import BeaconHeader, SampleTransmissionHeader, CommandHeader, TriggerSettingHeader
+from Headers import BeaconHeader, SampleTransmissionHeader, CommandHeader
 
 
 class Network:
@@ -38,14 +38,12 @@ class Network:
 
         self.board_collector.handle_events()
 
-    def send_trigger(self, target: BoardInfo, channel: int, active: bool, mV: int):
+    def send_trigger(self, target: BoardInfo, channel: int, active: bool, trigger_voltage: int):
         command = CommandHeader()
         command.port = 7567
-        command.num_settings = 1
-        command.trigger_setting_headers = [TriggerSettingHeader()]
-        command.trigger_setting_headers[0].trigger_voltage = mV
-        command.trigger_setting_headers[0].active = active
-        command.trigger_setting_headers[0].channel = channel
+        command.active = active
+        command.trigger_voltage = trigger_voltage
+        command.channel = channel
         command_bin = command.to_bytearray()
         self.socket.sendto(command_bin, (target.ip, command.port))
 

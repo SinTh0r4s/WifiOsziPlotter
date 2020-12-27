@@ -2,3 +2,4 @@ matplotlib==2.2.2
 numpy==1.19.3
 pyinstaller
 PyQt5
+pytest

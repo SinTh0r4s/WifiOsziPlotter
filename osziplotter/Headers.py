@@ -67,57 +67,29 @@ class CommandHeader:
 
     def __init__(self):
         self.port: int = 0
-        self.num_settings: int = 0
-        self.address: str = ""
-        self.trigger_setting_headers: List[TriggerSettingHeader] = []
-
-    def to_bytearray(self) -> bytearray:
-        self.num_settings = len(self.trigger_setting_headers)
-        buffer = bytearray(7 + 6 * self.num_settings)
-        buffer[0:2] = magic_number.to_bytes(2, little_endian)
-        buffer[2:6] = self.port.to_bytes(4, little_endian)
-        buffer[6] = self.num_settings
-        for i in range(self.num_settings):
-            offset = 6 * i
-            buffer[7+offset:13+offset] = self.trigger_setting_headers[i].to_bytearray()
-        return buffer
-
-    def from_bytearray(self, buffer: bytes) -> bool:
-        if len(buffer) < 13:
-            return False
-        if magic_number != int.from_bytes(buffer[0:2], little_endian):
-            return False
-        self.port = int.from_bytes(buffer[2:6], little_endian)
-        self.num_settings = buffer[6]
-        if len(buffer) != 7 + 6 * self.num_settings:
-            return False
-        self.trigger_setting_headers = [None] * self.num_settings
-        for i in range(self.num_settings):
-            self.trigger_setting_headers[i] = TriggerSettingHeader()
-            offset = 6 * i
-            if self.trigger_setting_headers[i].from_bytearray(buffer[7+offset:13+offset]) is False:
-                return False
-        return True
-
-
-class TriggerSettingHeader:
-
-    def __init__(self):
         self.channel: int = 0
         self.trigger_voltage: int = 0
         self.active: bool = False
+        self.address: str = ""
 
     def to_bytearray(self) -> bytearray:
-        buffer = bytearray(6)
-        buffer[0] = self.channel
-        buffer[1:5] = self.trigger_voltage.to_bytes(4, little_endian)
-        buffer[5] = self.active
+        buffer = bytearray(12)
+        buffer[0:2] = magic_number.to_bytes(2, little_endian)
+        buffer[2] = self.channel
+        buffer[3] = self.active
+        buffer[4:8] = self.trigger_voltage.to_bytes(4, little_endian)
+        buffer[8:12] = self.port.to_bytes(4, little_endian)
         return buffer
 
     def from_bytearray(self, buffer: bytes) -> bool:
-        self.channel = buffer[0]
-        self.trigger_voltage = int.from_bytes(buffer[1:5], little_endian)
-        self.active = bool(buffer[5])
+        if len(buffer) != 12:
+            return False
+        if magic_number != int.from_bytes(buffer[0:2], little_endian):
+            return False
+        self.channel = buffer[2]
+        self.active = buffer[3]
+        self.trigger_voltage = int.from_bytes(buffer[4:8], little_endian)
+        self.port = int.from_bytes(buffer[8:12], little_endian)
         return True
 
 
@@ -183,59 +155,3 @@ class SampleTransmissionHeader:
         if self.v_ref != other.v_ref:
             return False
         return True
-
-
-# Tests
-if __name__ == "__main__":
-    beacon = BeaconHeader()
-    beacon.beaconId = 11
-    beacon.v_ref = 3300
-    beacon.port = 12345
-    beacon.num_samples = 10000
-    beacon.sample_time = 0.1
-    beacon.frequency = 100000
-    beacon.resolution = 8
-    beacon.model = "Leona OTP FTW"
-    beacon.channels = 1
-    beacon.uid = 5433
-    beacon.adc = "Just kidding"
-    beacon_bin = beacon.to_bytearray()
-    beacon_copy = BeaconHeader()
-    beacon_copy.from_bytearray(beacon_bin)
-    print("Original beacon: " + str(beacon.__dict__))
-    print("Bin copy beacon: " + str(beacon_copy.__dict__))
-
-    command = CommandHeader()
-    command.port = 1234
-    command.num_settings = 2
-    command.trigger_setting_headers = [TriggerSettingHeader(), TriggerSettingHeader()]
-    command.trigger_setting_headers[0].trigger_voltage = 200
-    command.trigger_setting_headers[0].active = True
-    command.trigger_setting_headers[0].channel = 1
-    command.trigger_setting_headers[0].trigger_voltage = 3000
-    command.trigger_setting_headers[0].active = False
-    command.trigger_setting_headers[0].channel = 4
-    command_bin = command.to_bytearray()
-    command_copy = CommandHeader()
-    command_copy.from_bytearray(command_bin)
-    print("Original command: " + str(command.__dict__))
-    print("Bin copy command: " + str(command_copy.__dict__))
-    for i in range(len(command.trigger_setting_headers)):
-        print("    Original trigger: " + str(command.trigger_setting_headers[i].__dict__))
-        print("    Bin copy trigger: " + str(command_copy.trigger_setting_headers[i].__dict__))
-
-    samples = SampleTransmissionHeader()
-    samples.num_samples = 1
-    samples.v_ref = 3300
-    samples.channels = 1
-    samples.resolution = 8
-    samples.frequency = 100000
-    samples.transmission_group_id = 123
-    samples.num_frames = 1
-    samples.frame_id = 0
-    samples.payload = bytearray(1)
-    samples_bin = samples.to_bytearray()
-    samples_copy = SampleTransmissionHeader()
-    samples_copy.from_bytearray(samples_bin)
-    print("Original samples: " + str(samples.__dict__))
-    print("Bin copy samples: " + str(samples_copy.__dict__))
