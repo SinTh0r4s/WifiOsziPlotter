@@ -35,3 +35,6 @@ class BoardInfo:
                and self.v_ref == other.v_ref \
                and self.uid == other.uid \
                and self.ip == other.ip
+
+    def __str__(self) -> str:
+        return self.model + " (" + hex(self.uid) + ")"
