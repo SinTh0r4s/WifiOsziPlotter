@@ -35,7 +35,6 @@ class BoardInfoLabel(QWidget, BoardEvents):
         return label
 
     def update_boards(self, board_list: Dict[int, BoardInfo], selected_board: int) -> None:
-        print("hey")
         if selected_board == -1:
             self._uid_label.setText("")
             self._model_label.setText("")
@@ -51,7 +50,7 @@ class BoardInfoLabel(QWidget, BoardEvents):
             self._uid_label.setText(hex(board.uid))
             self._model_label.setText(board.model)
             self._adc_label.setText(board.adc)
-            sample_time = board.sample_time
+            sample_time = board.num_samples / board.frequency
             sample_time_unit = "s"
             if sample_time < 1.0:
                 sample_time = sample_time * 1000
@@ -62,7 +61,7 @@ class BoardInfoLabel(QWidget, BoardEvents):
             if sample_time < 1.0:
                 sample_time = sample_time * 1000
                 sample_time_unit = "ns"
-            self._sample_time_label.setText(str(sample_time) + sample_time_unit)
+            self._sample_time_label.setText(to_one_decimal(sample_time) + sample_time_unit)
             self._num_samples_label.setText(str(board.num_samples))
             self._num_channels_label.setText(str(board.num_channels))
             frequency = board.frequency
@@ -76,6 +75,6 @@ class BoardInfoLabel(QWidget, BoardEvents):
             if frequency > 1000:
                 frequency = frequency / 1000
                 frequency_unit = "GHz"
-            self._frequency_label.setText(str(to_one_decimal(frequency)) + frequency_unit)
+            self._frequency_label.setText(to_one_decimal(frequency) + frequency_unit)
             self._v_ref_label.setText(str(board.v_ref) + "mV")
             self._resolution_label.setText(str(board.resolution) + "bits")

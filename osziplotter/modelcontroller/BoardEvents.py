@@ -21,6 +21,7 @@ class BoardEvents:
     def put(cls, info: BoardInfo) -> None:
         if info.uid not in BoardEvents._board_list:
             BoardEvents._board_list[info.uid] = info
+            BoardEvents._selected_board = info.uid
             BoardEvents._update_listeners()
         elif BoardEvents._board_list[info.uid] != info:
             BoardEvents._board_list[info.uid] = info

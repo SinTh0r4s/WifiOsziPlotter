@@ -20,7 +20,6 @@ class BeaconHeader:
         self.adc: str = ""
         self.frequency: int = 0
         self.num_samples: int = 0
-        self.sample_time: float = 0.0
         self.v_ref: int = 0
         self.port: int = 0
         self.uid: int = 0
@@ -28,7 +27,7 @@ class BeaconHeader:
         self.address: str = ""
 
     def to_bytearray(self) -> bytearray:
-        buffer = bytearray(87)
+        buffer = bytearray(83)
         buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.resolution
         buffer[3] = self.num_channels
@@ -37,16 +36,13 @@ class BeaconHeader:
         buffer[35:35+len(self.adc)] = self.adc.encode(encoding_utf8)
         buffer[65:69] = self.frequency.to_bytes(4, little_endian)
         buffer[69:73] = self.num_samples.to_bytes(4, little_endian)
-        f = bytearray(pack("f", self.sample_time))
-        f.reverse()
-        buffer[73:77] = f
-        buffer[77:81] = self.v_ref.to_bytes(4, little_endian)
-        buffer[81:85] = self.port.to_bytes(4, little_endian)
-        buffer[85:87] = self.uid.to_bytes(2, little_endian)
+        buffer[73:77] = self.v_ref.to_bytes(4, little_endian)
+        buffer[77:81] = self.port.to_bytes(4, little_endian)
+        buffer[81:83] = self.uid.to_bytes(2, little_endian)
         return buffer
 
     def from_bytearray(self, buffer: bytes) -> bool:
-        if len(buffer) != 87:
+        if len(buffer) != 83:
             return False
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
@@ -57,12 +53,9 @@ class BeaconHeader:
         self.adc = buffer[35:65].decode(encoding_utf8, ignore_errors).rstrip('\x00')
         self.frequency = int.from_bytes(buffer[65:69], little_endian)
         self.num_samples = int.from_bytes(buffer[69:73], little_endian)
-        b = bytearray(buffer[73:77])
-        b.reverse()
-        self.sample_time, = unpack("f", b)
-        self.v_ref = int.from_bytes(buffer[77:81], little_endian)
-        self.port = int.from_bytes(buffer[81:85], little_endian)
-        self.uid = int.from_bytes(buffer[85:87], little_endian)
+        self.v_ref = int.from_bytes(buffer[73:77], little_endian)
+        self.port = int.from_bytes(buffer[77:81], little_endian)
+        self.uid = int.from_bytes(buffer[81:83], little_endian)
         return True
 
     def to_board_info(self) -> BoardInfo:
@@ -70,32 +63,9 @@ class BeaconHeader:
         board.model = self.model
         board.adc = self.adc
         board.resolution = self.resolution
-        if self.frequency < 1000:
-            board.frequency = self.frequency
-            board.frequency_unit = "Hz"
-        elif self.frequency < 1000000:
-            board.frequency = self.frequency / 1000
-            board.frequency_unit = "kHz"
-        elif self.frequency < 1000000000:
-            board.frequency = self.frequency / 1000000
-            board.frequency_unit = "MHz"
-        else:
-            board.frequency = self.frequency / 1000000000
-            board.frequency_unit = "GHz"
         board.num_samples = self.num_samples
         board.num_channels = self.num_channels
-        if self.sample_time > 1.0:
-            board.sample_time = self.sample_time
-            board.sample_time_unit = "s"
-        elif self.sample_time > 0.001:
-            board.sample_time = self.sample_time * 1000
-            board.sample_time_unit = "ms"
-        elif self.sample_time > 0.000001:
-            board.sample_time = self.sample_time * 1000000
-            board.sample_time_unit = "µs"
-        else:
-            board.sample_time = self.sample_time * 1000000000
-            board.sample_time_unit = "ns"
+        board.frequency = self.frequency
         board.v_ref = self.v_ref
         board.uid = self.uid
         board.ip = self.address
