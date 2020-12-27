@@ -69,6 +69,7 @@ class BeaconHeader:
         board.v_ref = self.v_ref
         board.uid = self.uid
         board.ip = self.address
+        board.port = self.port
         return board
 
 
