@@ -5,6 +5,7 @@ from osziplotter.modelcontroller.BoardEvents import BoardEvents
 
 from socket import socket, AF_INET, SOCK_DGRAM, error
 from errno import EAGAIN, EWOULDBLOCK
+from typing import Tuple
 
 
 class Network(BoardEvents):
@@ -36,11 +37,11 @@ class Network(BoardEvents):
             if err != EAGAIN and err != EWOULDBLOCK:
                 print("Fatal socket error!")
 
-    def send_trigger(self, target: BoardInfo, channel: int, active: bool, trigger_voltage: int) -> None:
+    def send_trigger(self, target: Tuple[str, int], channel: int, active: bool, trigger_voltage: int) -> None:
         command = CommandHeader()
         command.port = 7567
         command.active = active
         command.trigger_voltage = trigger_voltage
         command.channel = channel
         command_bin = command.to_bytearray()
-        self.socket.sendto(command_bin, (target.ip, command.port))
+        self.socket.sendto(command_bin, target)
