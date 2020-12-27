@@ -25,11 +25,12 @@ def test_headers():
     beacon.v_ref = 3300
     beacon.port = 12345
     beacon.num_samples = 10000
+    beacon.num_channels = 1
     beacon.sample_time = 0.1
     beacon.frequency = 100000
     beacon.resolution = 8
     beacon.model = "Leona OTP FTW"
-    beacon.channels = 1
+    beacon.num_channels = 1
     beacon.uid = 5433
     beacon.adc = "Just kidding"
 
