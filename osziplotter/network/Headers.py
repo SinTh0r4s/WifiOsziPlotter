@@ -1,5 +1,6 @@
-from typing import List
-from Util import get_bytes_per_sample
+from osziplotter.Util import get_bytes_per_sample
+from osziplotter.modelcontroller.BoardInfo import BoardInfo
+from osziplotter.modelcontroller.PlotInfo import PlotInfo
 from struct import unpack, pack
 
 magic_number: int = 0x7567
@@ -22,6 +23,7 @@ class BeaconHeader:
         self.v_ref: int = 0
         self.port: int = 0
         self.uid: int = 0
+
         self.address: str = ""
 
     def to_bytearray(self) -> bytearray:
@@ -62,6 +64,40 @@ class BeaconHeader:
         self.uid = int.from_bytes(buffer[85:87], little_endian)
         return True
 
+    def to_board_info(self) -> BoardInfo:
+        info: BoardInfo = BoardInfo()
+        info.model = self.model
+        info.adc = self.adc
+        info.resolution = self.resolution
+        if self.frequency < 1000:
+            info.frequency = self.frequency
+            info.frequency_unit = "Hz"
+        elif self.frequency < 1000000:
+            info.frequency = self.frequency / 1000
+            info.frequency_unit = "kHz"
+        elif self.frequency < 1000000000:
+            info.frequency = self.frequency / 1000000
+            info.frequency_unit = "MHz"
+        else:
+            info.frequency = self.frequency / 1000000000
+            info.frequency_unit = "GHz"
+        info.num_samples = self.num_samples
+        if self.sample_time > 1.0:
+            info.sample_time = self.sample_time
+            info.sample_time_unit = "s"
+        elif self.sample_time > 0.001:
+            info.sample_time = self.sample_time * 1000
+            info.sample_time_unit = "ms"
+        elif self.sample_time > 0.000001:
+            info.sample_time = self.sample_time * 1000000
+            info.sample_time_unit = "µs"
+        else:
+            info.sample_time = self.sample_time * 1000000000
+            info.sample_time_unit = "ns"
+        info.v_ref = self.v_ref
+        info.uid = self.uid
+        info.ip = self.address
+
 
 class CommandHeader:
 
@@ -70,6 +106,7 @@ class CommandHeader:
         self.channel: int = 0
         self.trigger_voltage: int = 0
         self.active: bool = False
+
         self.address: str = ""
 
     def to_bytearray(self) -> bytearray:
@@ -104,11 +141,13 @@ class SampleTransmissionHeader:
         self.frequency: int = 0
         self.v_ref: int = 0
         self.num_samples: int = 0
-        self.address: str = ""
+        self.uid: int = 0
         self.payload: bytearray = bytearray(0)
 
+        self.address: str = ""
+
     def to_bytearray(self) -> bytearray:
-        buffer = bytearray(19 + len(self.payload))
+        buffer = bytearray(21 + len(self.payload))
         buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.frame_id
         buffer[3] = self.num_frames
@@ -118,11 +157,12 @@ class SampleTransmissionHeader:
         buffer[7:11] = self.frequency.to_bytes(4, little_endian)
         buffer[11:15] = self.v_ref.to_bytes(4, little_endian)
         buffer[15:19] = self.num_samples.to_bytes(4, little_endian)
-        buffer[19:] = self.payload
+        buffer[19:21] = self.uid.to_bytes(2, little_endian)
+        buffer[21:] = self.payload
         return buffer
 
     def from_bytearray(self, buffer: bytes) -> bool:
-        if len(buffer) < 19:
+        if len(buffer) < 21:
             return False
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
@@ -136,22 +176,26 @@ class SampleTransmissionHeader:
         self.frequency = int.from_bytes(buffer[7:11], little_endian)
         self.v_ref = int.from_bytes(buffer[11:15], little_endian)
         self.num_samples = int.from_bytes(buffer[15:19], little_endian)
-        if len(buffer) != 19 + self.num_samples * get_bytes_per_sample(self.resolution):
+        if len(buffer) != 21 + self.num_samples * get_bytes_per_sample(self.resolution):
             return False
-        self.payload = buffer[19:]
+        self.uid = int.from_bytes(buffer[19:21], little_endian)
+        self.payload = buffer[21:]
         return True
 
-    def same_transmission_group(self, other):
-        if self.num_frames != other.num_frames:
-            return False
-        if self.transmission_group_id != other.transmission_group_id:
-            return False
-        if self.resolution != other.resolution:
-            return False
-        if self.channels != other.channels:
-            return False
-        if self.frequency != other.frequency:
-            return False
-        if self.v_ref != other.v_ref:
-            return False
-        return True
+    def same_transmission_group(self, other) -> bool:
+        return self.num_frames == other.num_frames\
+            and self.transmission_group_id == other.transmission_group_id\
+            and self.resolution == other.resolution\
+            and self.channels == other.channels\
+            and self.frequency == other.frequency\
+            and self.v_ref == other.v_ref\
+            and self.uid == other.uid
+
+    def to_plot_info(self) -> PlotInfo:
+        plot = PlotInfo()
+        plot.resolution = self.resolution
+        plot.channels = self.channels
+        plot.frequency = self.frequency
+        plot.v_ref = self.v_ref
+        plot.num_samples = self.num_samples
+        plot.board_uid = self.uid

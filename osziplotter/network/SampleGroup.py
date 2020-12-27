@@ -1,8 +1,8 @@
 from Headers import SampleTransmissionHeader
 from time import time
-from Util import get_bytes_per_sample
+from osziplotter.Util import get_bytes_per_sample
 from math import floor
-from typing import List
+from osziplotter.modelcontroller.PlotInfo import PlotInfo
 import numpy as np
 
 
@@ -44,9 +44,13 @@ class SampleGroup:
         self.samples[header.frame_id] = channels
         return True
 
-    def get_samples(self) -> List[np.array]:
-        channels = [np.zeros(0)] * self.header.channels
+    def get_samples(self) -> PlotInfo:
+        channels = {}
+        for i in range(self.header.channels):
+            channels[i] = np.zeros(0)
         for segment in self.samples:
             for i in range(self.header.channels):
                 channels[i] = np.append(channels[i], segment[i])
-        return channels
+        plot = self.header.to_plot_info()
+        plot.channels = channels
+        return plot

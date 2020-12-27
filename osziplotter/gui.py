@@ -1,12 +1,12 @@
 # lib imports
-from tkinter import Tk, LEFT, RIGHT, Y
+from tkinter import Tk, LEFT
 import numpy as np
 
 # local import
 from BoardInfoDisplay import BoardInfoDisplay
 from SamplePlotter import SamplePlotter
-from BoardInfo import BoardInfo
-from Network import Network
+from osziplotter.modelcontroller.BoardInfo import BoardInfo
+from osziplotter.network.Network import Network
 
 
 def gui():
@@ -20,7 +20,7 @@ def gui():
     info.frequency = 500
     info.frequency_unit = "kHz"
     info.resolution = 8
-    info.samples = 500
+    info.num_samples = 500
     info.model = "TestBoard"
     info.adc = "Imaginary"
 
@@ -30,7 +30,7 @@ def gui():
 
     s = SamplePlotter(master=master)
     s.pack(side=LEFT)
-    s.refresh(info, np.arange(0, 3300, 3300 / info.samples))
+    s.refresh(info, np.arange(0, 3300, 3300 / info.num_samples))
     s.reset()
 
     def draw(data):

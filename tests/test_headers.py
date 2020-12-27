@@ -3,7 +3,7 @@ import sys
 # Add project folder to import path
 sys.path.insert(0, '../osziplotter')
 
-from osziplotter.Headers import BeaconHeader, CommandHeader, SampleTransmissionHeader
+from osziplotter.network.Headers import BeaconHeader, CommandHeader, SampleTransmissionHeader
 
 
 def mismatch_message(header1, header2):

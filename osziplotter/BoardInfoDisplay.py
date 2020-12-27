@@ -1,8 +1,8 @@
 # lib imports
-from tkinter import Frame, Label, StringVar, LEFT, RIGHT, BOTH, TOP, NONE, Y, X, W, E
+from tkinter import Frame, Label, StringVar, LEFT, BOTH, TOP, X, W
 
 # local imports
-from BoardInfo import BoardInfo
+from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from Util import to_one_decimal
 
 
@@ -49,7 +49,7 @@ class BoardInfoDisplay(Frame):
         self.adc_var.set(info.adc)
         self.resolution_var.set(str(info.resolution) + " bits")
         self.frequency_var.set(to_one_decimal(info.frequency) + " " + info.frequency_unit)
-        self.samples_var.set(info.samples)
+        self.samples_var.set(info.num_samples)
         self.sample_time_var.set(to_one_decimal(info.sample_time) + " " + info.sample_time_unit)
         self.v_ref_var.set(str(info.v_ref) + " mV")
 

@@ -6,7 +6,7 @@ from matplotlib.backend_bases import key_press_handler
 import numpy as np
 
 # local imports
-from BoardInfo import BoardInfo
+from osziplotter.modelcontroller.BoardInfo import BoardInfo
 
 
 class SamplePlotter(Frame):
@@ -26,7 +26,7 @@ class SamplePlotter(Frame):
         self.canvas.mpl_connect("key_press_event", on_key_press)
 
     def refresh(self, info: BoardInfo, samples: np.array):
-        x_data = np.arange(0, info.sample_time, info.sample_time / info.samples)  # TODO: better to adjust to sample vector length
+        x_data = np.arange(0, info.sample_time, info.sample_time / info.num_samples)  # TODO: better to adjust to sample vector length
         self.artist, = self.plot.plot(x_data, samples)
         self.plot.set_xlabel(info.sample_time_unit)
         self.plot.set_ylabel("mV")
