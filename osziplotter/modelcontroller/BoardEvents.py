@@ -50,5 +50,5 @@ class BoardEvents:
         PlotEvents._update_selected_board(uid)
 
     # Overwrite this method if you want to react on it
-    def update_boards(self, board_list: Dict[BoardInfo], selected_board: int) -> None:
+    def update_boards(self, board_list: Dict[int, BoardInfo], selected_board: int) -> None:
         pass
