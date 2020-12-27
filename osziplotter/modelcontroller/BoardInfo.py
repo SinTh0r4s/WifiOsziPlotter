@@ -13,6 +13,7 @@ class BoardInfo:
         self.resolution: int = 0        # bits
         self.frequency: float = 0.0
         self.num_samples: int = 0           # counter
+        self.num_channels: int = 0
         self.sample_time: float = 0.0
         self.v_ref: int = 0             # mV
         self.uid: int = 0
@@ -29,6 +30,7 @@ class BoardInfo:
                and self.resolution == other.resolution \
                and self.frequency == other.frequency \
                and self.num_samples == other.num_samples \
+               and self.num_channels == other.num_channels \
                and self.sample_time == other.sample_time \
                and self.v_ref == other.v_ref \
                and self.uid == other.uid \

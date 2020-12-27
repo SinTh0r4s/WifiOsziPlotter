@@ -14,7 +14,7 @@ class BeaconHeader:
 
     def __init__(self):
         self.resolution: int = 0
-        self.channels: int = 0
+        self.num_channels: int = 0
         self.beaconId: int = 0
         self.model: str = ""
         self.adc: str = ""
@@ -31,7 +31,7 @@ class BeaconHeader:
         buffer = bytearray(87)
         buffer[0:2] = magic_number.to_bytes(2, little_endian)
         buffer[2] = self.resolution
-        buffer[3] = self.channels
+        buffer[3] = self.num_channels
         buffer[4] = self.beaconId
         buffer[5:5+len(self.model)] = self.model.encode(encoding_utf8)
         buffer[35:35+len(self.adc)] = self.adc.encode(encoding_utf8)
@@ -51,7 +51,7 @@ class BeaconHeader:
         if magic_number != int.from_bytes(buffer[0:2], little_endian):
             return False
         self.resolution = buffer[2]
-        self.channels = buffer[3]
+        self.num_channels = buffer[3]
         self.beaconId = buffer[4]
         self.model = buffer[5:35].decode(encoding_utf8, ignore_errors).rstrip('\x00')
         self.adc = buffer[35:65].decode(encoding_utf8, ignore_errors).rstrip('\x00')
@@ -83,6 +83,7 @@ class BeaconHeader:
             board.frequency = self.frequency / 1000000000
             board.frequency_unit = "GHz"
         board.num_samples = self.num_samples
+        board.num_channels = self.num_channels
         if self.sample_time > 1.0:
             board.sample_time = self.sample_time
             board.sample_time_unit = "s"
@@ -188,7 +189,7 @@ class SampleTransmissionHeader:
         return self.num_frames == other.num_frames\
             and self.transmission_group_id == other.transmission_group_id\
             and self.resolution == other.resolution\
-            and self.channels == other.channels\
+            and self.channels == other.num_channels\
             and self.frequency == other.frequency\
             and self.v_ref == other.v_ref\
             and self.uid == other.uid
