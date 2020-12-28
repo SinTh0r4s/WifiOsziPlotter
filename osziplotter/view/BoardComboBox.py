@@ -10,6 +10,7 @@ class BoardComboBox(QComboBox, BoardEvents):
     def __init__(self, *args, **kwargs):
         super(BoardComboBox, self).__init__(*args, **kwargs)
         self.setDisabled(True)
+        self.addItem("No board available")
         self.activated.connect(self._select_board)
         self._uids: List[int] = []
 
@@ -20,6 +21,7 @@ class BoardComboBox(QComboBox, BoardEvents):
         self.clear()
         if selected_board == -1:
             self.setDisabled(True)
+            self.addItem("No board available")
         else:
             self.setEnabled(True)
             self.addItems([str(board) for board in board_list.values()])

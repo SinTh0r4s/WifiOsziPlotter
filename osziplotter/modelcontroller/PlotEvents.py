@@ -12,7 +12,7 @@ class PlotEvents:
     _plots: Dict[int, Dict[float, PlotInfo]] = {}
     _selected_plot: Tuple[int, float] = (-1, 0.0)
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self._listenerId = len(PlotEvents._listeners)
         PlotEvents._listeners.append(self)
 

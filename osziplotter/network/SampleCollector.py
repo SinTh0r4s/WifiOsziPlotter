@@ -24,3 +24,4 @@ class SampleCollector(PlotEvents):
         for groupId in self.groups:
             if self.groups[groupId].timeout():
                 self.groups.pop(groupId)
+                return

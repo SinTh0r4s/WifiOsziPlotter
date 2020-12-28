@@ -8,7 +8,7 @@ from typing import Dict, List
 class ExportWidget(QPushButton, PlotEvents):
 
     def __init__(self, *args, **kwargs):
-        super(ExportWidget, self).__init__("Export", *args, **kwargs)
+        super(ExportWidget, self).__init__("Export to Matlab", *args, **kwargs)
         self.clicked.connect(self._export)
 
     def _export(self):

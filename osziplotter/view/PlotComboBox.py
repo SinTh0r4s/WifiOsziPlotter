@@ -11,6 +11,7 @@ class PlotComboBox(QComboBox, PlotEvents):
     def __init__(self, *args, **kwargs):
         super(PlotComboBox, self).__init__(*args, **kwargs)
         self.setDisabled(True)
+        self.addItem("No plot available")
         self.activated.connect(self._select_plot)
         self._timestamps: List[float] = []
 
@@ -21,6 +22,7 @@ class PlotComboBox(QComboBox, PlotEvents):
         self.clear()
         if visible_plot is None:
             self.setDisabled(True)
+            self.addItem("No plot available")
         else:
             self.setEnabled(True)
             timestamps_str = [get_timestamp_readable(plot.timestamp) for plot in plots.values()]

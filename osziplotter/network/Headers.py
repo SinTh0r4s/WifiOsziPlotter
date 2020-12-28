@@ -160,7 +160,7 @@ class SampleTransmissionHeader:
         return self.num_frames == other.num_frames\
             and self.transmission_group_id == other.transmission_group_id\
             and self.resolution == other.resolution\
-            and self.channels == other.num_channels\
+            and self.channels == other.channels\
             and self.frequency == other.frequency\
             and self.v_ref == other.v_ref\
             and self.uid == other.uid

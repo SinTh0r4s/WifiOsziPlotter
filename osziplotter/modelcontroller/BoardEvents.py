@@ -13,7 +13,7 @@ class BoardEvents:
     _listeners: List[Type[BoardEvents]] = []
     _selected_board: int = -1
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self._listenerId = len(BoardEvents._listeners)
         BoardEvents._listeners.append(self)
 

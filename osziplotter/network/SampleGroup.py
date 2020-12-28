@@ -16,7 +16,7 @@ class SampleGroup:
         self.timestamp_sec: float = time()
 
     def timeout(self) -> bool:
-        if time() - self.timestamp_sec > 2:
+        if time() - self.timestamp_sec > 2 and not __debug__:
             return True
         return False
 

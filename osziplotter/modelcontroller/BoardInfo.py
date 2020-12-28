@@ -20,7 +20,7 @@ class BoardInfo:
         self.ip: str = ""
 
     def is_timeout(self, timeout: float) -> bool:
-        if self.timestamp - time() > timeout:
+        if self.timestamp - time() > timeout and not __debug__:
             return True
         return False
 
