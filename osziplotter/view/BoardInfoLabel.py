@@ -1,4 +1,4 @@
-from osziplotter.Util import to_one_decimal, get_frequency_readable
+from osziplotter.Util import to_one_decimal, get_frequency_readable, get_timesteps_readable
 from osziplotter.modelcontroller.BoardEvents import BoardEvents
 from osziplotter.modelcontroller.BoardInfo import BoardInfo
 
@@ -50,17 +50,7 @@ class BoardInfoLabel(QWidget, BoardEvents):
             self._uid_label.setText(hex(board.uid))
             self._model_label.setText(board.model)
             self._adc_label.setText(board.adc)
-            sample_time = board.num_samples / board.frequency
-            sample_time_unit = "s"
-            if sample_time < 1.0:
-                sample_time = sample_time * 1000
-                sample_time_unit = "ms"
-            if sample_time < 1.0:
-                sample_time = sample_time * 1000
-                sample_time_unit = "ys"
-            if sample_time < 1.0:
-                sample_time = sample_time * 1000
-                sample_time_unit = "ns"
+            sample_time, sample_time_unit = get_timesteps_readable(board.num_samples / board.frequency)
             self._sample_time_label.setText(to_one_decimal(sample_time) + sample_time_unit)
             self._num_samples_label.setText(str(board.num_samples))
             self._num_channels_label.setText(str(board.num_channels))
