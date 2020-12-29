@@ -1,6 +1,6 @@
 from osziplotter.modelcontroller.PlotEvents import PlotEvents
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
-from osziplotter.Util import get_frequency_readable, get_timestamp_readable, get_timesteps_readable
+from osziplotter.Util import get_timestamp_readable, get_timesteps_readable
 
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
 from matplotlib.figure import Figure
@@ -11,7 +11,7 @@ import numpy as np
 
 
 class PlotWidget(QWidget, PlotEvents):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(PlotWidget, self).__init__(*args, **kwargs)
         self.setLayout(QVBoxLayout())
         self._canvas = PlotCanvas(self, width=10, height=8)
@@ -24,7 +24,7 @@ class PlotWidget(QWidget, PlotEvents):
 
 
 class PlotCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=10, height=8, dpi=100):
+    def __init__(self, parent=None, width: int = 10, height: int = 8, dpi: int = 100) -> None:
         fig = Figure(figsize=(width, height), dpi=dpi)
         super(PlotCanvas, self).__init__(fig)
         self.setParent(parent)

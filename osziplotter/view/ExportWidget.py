@@ -7,11 +7,11 @@ from typing import Dict
 
 class ExportWidget(QPushButton, PlotEvents):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(ExportWidget, self).__init__("Export to Matlab", *args, **kwargs)
         self.clicked.connect(self._export)
 
-    def _export(self):
+    def _export(self) -> None:
         pass
 
     def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:

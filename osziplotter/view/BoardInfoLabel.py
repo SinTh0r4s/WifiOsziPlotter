@@ -8,7 +8,7 @@ from typing import List, Dict
 
 class BoardInfoLabel(QWidget, BoardEvents):
     
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(BoardInfoLabel, self).__init__(*args, **kwargs)
         self._row_counter = 0
         self._name_labels: List[QLabel] = []

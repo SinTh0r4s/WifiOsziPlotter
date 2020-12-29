@@ -12,7 +12,7 @@ from PyQt5.QtCore import QTimer
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, network: Network, *args, **kwargs):
+    def __init__(self, network: Network, *args, **kwargs) -> None:
         super(MainWindow, self).__init__(*args, **kwargs)
         self._network = network
         self.setWindowTitle("WiFi Oszi by Johann Bernhardt")
@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
 
 class HLine(QFrame):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(HLine, self).__init__(*args, **kwargs)
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
@@ -73,7 +73,7 @@ class HLine(QFrame):
 
 class VLine(QFrame):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(VLine, self).__init__(*args, **kwargs)
         self.setFrameShape(QFrame.VLine)
         self.setFrameShadow(QFrame.Sunken)

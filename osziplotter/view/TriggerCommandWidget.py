@@ -8,7 +8,7 @@ from typing import Dict
 
 class TriggerCommandWidget(QWidget, BoardEvents):
 
-    def __init__(self, network: Network, *args, **kwargs):
+    def __init__(self, network: Network, *args, **kwargs) -> None:
         super(TriggerCommandWidget, self).__init__(*args, **kwargs)
         self._target_ip: str = ""
         self._target_port: int = 0

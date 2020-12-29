@@ -6,7 +6,7 @@ from time import time
 
 class BoardInfo:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._timestamp: float = time()
         self.model: str = "unknown"
         self.adc: str = "integrated"

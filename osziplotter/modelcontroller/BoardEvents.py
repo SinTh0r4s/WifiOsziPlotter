@@ -4,16 +4,16 @@ from __future__ import annotations
 from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from osziplotter.modelcontroller.PlotEvents import PlotEvents
 
-from typing import Dict, Type, List
+from typing import Dict, Type, List, ClassVar
 
 
 class BoardEvents:
 
-    _board_list: Dict[int, BoardInfo] = {}
-    _listeners: List[Type[BoardEvents]] = []
-    _selected_board: int = -1
+    _board_list: ClassVar[Dict[int, BoardInfo]] = {}
+    _listeners: ClassVar[List[Type[BoardEvents]]] = []
+    _selected_board: ClassVar[int] = -1
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         BoardEvents._listeners.append(self)
 
     @classmethod

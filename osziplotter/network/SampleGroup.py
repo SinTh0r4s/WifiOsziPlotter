@@ -9,7 +9,7 @@ import numpy as np
 
 class SampleGroup:
 
-    def __init__(self, header: SampleTransmissionHeader):
+    def __init__(self, header: SampleTransmissionHeader) -> None:
         self._samples = [None] * header.num_frames
         self._header = header
         self._bytes_per_sample = get_bytes_per_sample(self._header.resolution)

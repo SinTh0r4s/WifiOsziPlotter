@@ -2,8 +2,6 @@ from osziplotter.Util import get_bytes_per_sample
 from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
 
-from struct import unpack, pack
-
 magic_number: int = 0x7567
 little_endian: str = "little"
 encoding_utf8: str = "utf-8"
@@ -12,7 +10,7 @@ ignore_errors: str = "ignore"
 
 class BeaconHeader:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.resolution: int = 0
         self.num_channels: int = 0
         self.beaconId: int = 0
@@ -75,7 +73,7 @@ class BeaconHeader:
 
 class CommandHeader:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.port: int = 0
         self.channel: int = 0
         self.trigger_voltage: int = 0
@@ -106,7 +104,7 @@ class CommandHeader:
 
 class SampleTransmissionHeader:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.frame_id: int = 0
         self.num_frames: int = 0
         self.transmission_group_id: int = 0

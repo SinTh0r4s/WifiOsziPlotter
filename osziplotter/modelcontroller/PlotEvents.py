@@ -3,16 +3,16 @@ from __future__ import annotations
 
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
 
-from typing import Dict, Type, List, Tuple
+from typing import Dict, Type, List, Tuple, ClassVar
 
 
 class PlotEvents:
 
-    _listeners: List[Type[PlotEvents]] = []
-    _plots: Dict[int, Dict[float, PlotInfo]] = {}
-    _selected_plot: Tuple[int, float] = (-1, 0.0)
+    _listeners: ClassVar[List[Type[PlotEvents]]] = []
+    _plots: ClassVar[Dict[int, Dict[float, PlotInfo]]] = {}
+    _selected_plot: ClassVar[Tuple[int, float]] = (-1, 0.0)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         PlotEvents._listeners.append(self)
 
     @classmethod

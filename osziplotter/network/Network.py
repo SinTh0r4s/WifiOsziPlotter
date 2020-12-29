@@ -4,14 +4,14 @@ from osziplotter.modelcontroller.BoardEvents import BoardEvents
 
 from socket import socket, AF_INET, SOCK_DGRAM, error
 from errno import EAGAIN, EWOULDBLOCK
-from typing import Tuple
+from typing import Tuple, ClassVar
 
 
 class Network(BoardEvents):
 
-    _listen_port: int = 7567
+    _listen_port: ClassVar[int] = 7567
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(Network, self).__init__()
         self._sample_collector = SampleCollector()
         self._socket = socket(AF_INET, SOCK_DGRAM)

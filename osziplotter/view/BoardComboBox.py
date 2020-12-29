@@ -7,7 +7,7 @@ from typing import Dict, List
 
 class BoardComboBox(QComboBox, BoardEvents):
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(BoardComboBox, self).__init__(*args, **kwargs)
         self.setDisabled(True)
         self.addItem("No board available")

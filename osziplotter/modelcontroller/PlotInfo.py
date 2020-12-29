@@ -5,7 +5,7 @@ from typing import Dict
 
 class PlotInfo:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.timestamp = time()
         self.channels: Dict[int, np.ndarray] = {}
         self.v_ref: int = 3300

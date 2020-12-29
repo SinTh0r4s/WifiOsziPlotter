@@ -7,7 +7,7 @@ from typing import Dict
 
 class SampleCollector(PlotEvents):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(SampleCollector, self).__init__()
         self._groups: Dict[int, SampleGroup] = {}
 
