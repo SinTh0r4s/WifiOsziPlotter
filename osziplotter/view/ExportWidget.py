@@ -17,7 +17,7 @@ class ExportWidget(QPushButton, PlotEvents):
     def _export(self) -> None:
         filename, _ = QFileDialog().getSaveFileName(self, "Save plot as ...", filter="Matlab Data File (*.mat)")
         if filename != "":
-            savemat(filename, self._current_plot.__dict__)
+            savemat(filename, self._current_plot.to_dict())
 
     def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:
         self._current_plot = visible_plot

@@ -13,3 +13,9 @@ class PlotInfo:
         self.frequency: int = 0
         self.board_uid: int = 0
         self.num_samples: int = 0
+
+    # scipy.io.savemat cannot resolve recursive dictionaries so the data is packed into a list
+    def to_dict(self) -> Dict:
+        return {"timestamp": self.timestamp, "v_ref": self.v_ref, "resolution": self.resolution,
+                "frequency": self.frequency, "board_uid": self.board_uid, "num_samples": self.num_samples,
+                "channels": list(self.channels.values())}
