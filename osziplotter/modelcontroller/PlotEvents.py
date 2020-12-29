@@ -25,7 +25,7 @@ class PlotEvents:
 
     @classmethod
     def _update_listeners(cls, visible_plot: PlotInfo = None) -> None:
-        uid = PlotEvents._selected_plot[0]
+        uid, _ = PlotEvents._selected_plot
         for listener in PlotEvents._listeners:
             listener.update_plot(PlotEvents._plots[uid], visible_plot)
 
@@ -40,7 +40,7 @@ class PlotEvents:
 
     @classmethod
     def update_selected_plot(cls, timestamp: float) -> None:
-        uid = PlotEvents._selected_plot[0]
+        uid, _ = PlotEvents._selected_plot
         PlotEvents._selected_plot = (uid, timestamp)
         PlotEvents._update_listeners(PlotEvents._plots[uid][timestamp])
 

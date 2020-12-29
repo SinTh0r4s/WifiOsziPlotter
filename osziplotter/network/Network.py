@@ -26,12 +26,12 @@ class Network(BoardEvents):
             if len(buffer) > 0:
                 beacon = BeaconHeader()
                 if beacon.from_bytearray(buffer):
-                    beacon.address = address[0]
+                    beacon.address, _ = address
                     self.put(beacon.to_board_info())
                     return
                 samples = SampleTransmissionHeader()
                 if samples.from_bytearray(buffer):
-                    samples.address = address[0]
+                    samples.address, _ = address
                     self._sample_collector.process_received_sample_transmission_header(samples)
         except error as e:
             err = e.args[0]
