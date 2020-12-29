@@ -14,7 +14,6 @@ class BoardEvents:
     _selected_board: int = -1
 
     def __init__(self, *args, **kwargs):
-        self._listenerId = len(BoardEvents._listeners)
         BoardEvents._listeners.append(self)
 
     @classmethod

@@ -15,7 +15,7 @@ class PlotComboBox(QComboBox, PlotEvents):
         self.activated.connect(self._select_plot)
         self._timestamps: List[float] = []
 
-    def _select_plot(self, index: int):
+    def _select_plot(self, index: int) -> None:
         self.update_selected_plot(self._timestamps[index])
 
     def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:

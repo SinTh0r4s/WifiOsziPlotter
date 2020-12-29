@@ -1,6 +1,5 @@
 from osziplotter.network.Headers import BeaconHeader, SampleTransmissionHeader, CommandHeader
 from osziplotter.network.SampleCollector import SampleCollector
-from osziplotter.modelcontroller.BoardInfo import BoardInfo
 from osziplotter.modelcontroller.BoardEvents import BoardEvents
 
 from socket import socket, AF_INET, SOCK_DGRAM, error
@@ -10,18 +9,20 @@ from typing import Tuple
 
 class Network(BoardEvents):
 
+    _listen_port: int = 7567
+
     def __init__(self):
         super(Network, self).__init__()
-        self.sample_collector = SampleCollector()
-        self.socket = socket(AF_INET, SOCK_DGRAM)
+        self._sample_collector = SampleCollector()
+        self._socket = socket(AF_INET, SOCK_DGRAM)
 
     def listen(self) -> None:
-        self.socket.bind(("", 7567))
-        self.socket.setblocking(False)
+        self._socket.bind(("", Network._listen_port))
+        self._socket.setblocking(False)
 
     def handle_events(self) -> None:
         try:
-            buffer, address = self.socket.recvfrom(4096)
+            buffer, address = self._socket.recvfrom(4096)
             if len(buffer) > 0:
                 beacon = BeaconHeader()
                 if beacon.from_bytearray(buffer):
@@ -31,7 +32,7 @@ class Network(BoardEvents):
                 samples = SampleTransmissionHeader()
                 if samples.from_bytearray(buffer):
                     samples.address = address[0]
-                    self.sample_collector.process_received_sample_transmission_header(samples)
+                    self._sample_collector.process_received_sample_transmission_header(samples)
         except error as e:
             err = e.args[0]
             if err != EAGAIN and err != EWOULDBLOCK:
@@ -39,9 +40,9 @@ class Network(BoardEvents):
 
     def send_trigger(self, target: Tuple[str, int], channel: int, active: bool, trigger_voltage: int) -> None:
         command = CommandHeader()
-        command.port = 7567
+        command.port = Network._listen_port
         command.active = active
         command.trigger_voltage = trigger_voltage
         command.channel = channel
         command_bin = command.to_bytearray()
-        self.socket.sendto(command_bin, target)
+        self._socket.sendto(command_bin, target)

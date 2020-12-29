@@ -14,13 +14,13 @@ class PlotWidget(QWidget, PlotEvents):
     def __init__(self, *args, **kwargs):
         super(PlotWidget, self).__init__(*args, **kwargs)
         self.setLayout(QVBoxLayout())
-        self.canvas = PlotCanvas(self, width=10, height=8)
-        self.toolbar = NavigationToolbar2QT(self.canvas, self)
-        self.layout().addWidget(self.toolbar)
-        self.layout().addWidget(self.canvas)
+        self._canvas = PlotCanvas(self, width=10, height=8)
+        self._toolbar = NavigationToolbar2QT(self._canvas, self)
+        self.layout().addWidget(self._toolbar)
+        self.layout().addWidget(self._canvas)
 
     def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:
-        self.canvas.update_plot(plots, visible_plot)
+        self._canvas.update_plot(visible_plot)
 
 
 class PlotCanvas(FigureCanvasQTAgg):
@@ -31,7 +31,7 @@ class PlotCanvas(FigureCanvasQTAgg):
         FigureCanvasQTAgg.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
 
-    def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:
+    def update_plot(self, visible_plot: PlotInfo = None) -> None:
         self.figure.clf()
         if visible_plot is not None:
             ax = self.figure.add_subplot(111)

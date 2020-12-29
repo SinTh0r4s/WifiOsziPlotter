@@ -49,17 +49,16 @@ class TriggerCommandWidget(QWidget, BoardEvents):
         self._button_layout.addWidget(self._disarm_button)
         self.layout().addLayout(self._button_layout)
 
-    def _set_trigger(self):
+    def _set_trigger(self) -> None:
         self._network.send_trigger((self._target_ip, self._target_port), 1, True, self._input.value())
         self._disarm_button.setEnabled(True)
 
-    def _disarm_trigger(self):
+    def _disarm_trigger(self) -> None:
         self._network.send_trigger((self._target_ip, self._target_port), 1, False, self._input.value())
         self._disarm_button.setDisabled(True)
 
-    def _select_channel(self, index: int):
+    def _select_channel(self, index: int) -> None:
         self._selected_channel = index + 1
-        print(str(index+1))
 
     def update_boards(self, board_list: Dict[int, BoardInfo], selected_board: int) -> None:
         if selected_board == -1:

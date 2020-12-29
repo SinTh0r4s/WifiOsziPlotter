@@ -14,7 +14,7 @@ class BoardComboBox(QComboBox, BoardEvents):
         self.activated.connect(self._select_board)
         self._uids: List[int] = []
 
-    def _select_board(self, index: int):
+    def _select_board(self, index: int) -> None:
         self.update_selected_board(self._uids[index])
 
     def update_boards(self, board_list: Dict[int, BoardInfo], selected_board: int) -> None:

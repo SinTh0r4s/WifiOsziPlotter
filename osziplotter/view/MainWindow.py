@@ -54,11 +54,11 @@ class MainWindow(QMainWindow):
         self._widget.setLayout(self._layout)
         self.setCentralWidget(self._widget)
 
-        self.timer = QTimer()
-        self.timer.timeout.connect(self._tick)
-        self.timer.start(50)
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._tick)
+        self._timer.start(50)
 
-    def _tick(self):
+    def _tick(self) -> None:
         self._network.handle_events()
         BoardEvents.tick()
 
@@ -66,7 +66,7 @@ class MainWindow(QMainWindow):
 class HLine(QFrame):
 
     def __init__(self, *args, **kwargs):
-        super(HLine, self).__init__()
+        super(HLine, self).__init__(*args, **kwargs)
         self.setFrameShape(QFrame.HLine)
         self.setFrameShadow(QFrame.Sunken)
 
@@ -74,6 +74,6 @@ class HLine(QFrame):
 class VLine(QFrame):
 
     def __init__(self, *args, **kwargs):
-        super(VLine, self).__init__()
+        super(VLine, self).__init__(*args, **kwargs)
         self.setFrameShape(QFrame.VLine)
         self.setFrameShadow(QFrame.Sunken)

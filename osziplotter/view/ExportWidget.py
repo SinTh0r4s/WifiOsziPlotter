@@ -2,7 +2,7 @@ from osziplotter.modelcontroller.PlotEvents import PlotEvents
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
 
 from PyQt5.QtWidgets import QPushButton
-from typing import Dict, List
+from typing import Dict
 
 
 class ExportWidget(QPushButton, PlotEvents):

@@ -7,7 +7,7 @@ from time import time
 class BoardInfo:
 
     def __init__(self):
-        self.timestamp: float = time()
+        self._timestamp: float = time()
         self.model: str = "unknown"
         self.adc: str = "integrated"
         self.resolution: int = 0        # bits
@@ -20,7 +20,7 @@ class BoardInfo:
         self.ip: str = ""
 
     def is_timeout(self, timeout: float) -> bool:
-        if self.timestamp - time() > timeout and not __debug__:
+        if self._timestamp - time() > timeout and not __debug__:
             return True
         return False
 
