@@ -29,4 +29,3 @@ class PlotComboBox(QComboBox, PlotEvents):
             self.addItems(timestamps_str)
             self._timestamps = [plot.timestamp for plot in plots.values()]
             self.setCurrentIndex(list(plots.values()).index(visible_plot))
-

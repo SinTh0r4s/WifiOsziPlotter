@@ -11,13 +11,14 @@ class BoardInfo:
         self.model: str = "unknown"
         self.adc: str = "integrated"
         self.resolution: int = 0        # bits
-        self.frequency: float = 0.0
+        self.frequency: int = 0
         self.num_samples: int = 0           # counter
         self.num_channels: int = 0
         self.sample_time: float = 0.0
         self.v_ref: int = 0             # mV
         self.uid: int = 0
         self.ip: str = ""
+        self.port: int = 0
 
     def is_timeout(self, timeout: float) -> bool:
         if self._timestamp - time() > timeout and not __debug__:
@@ -34,7 +35,8 @@ class BoardInfo:
                and self.sample_time == other.sample_time \
                and self.v_ref == other.v_ref \
                and self.uid == other.uid \
-               and self.ip == other.ip
+               and self.ip == other.ip \
+               and self.port == other.port
 
     def __str__(self) -> str:
         return self.model + " (" + hex(self.uid) + ")"

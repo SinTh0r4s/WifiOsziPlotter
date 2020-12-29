@@ -27,4 +27,3 @@ class BoardComboBox(QComboBox, BoardEvents):
             self.addItems([str(board) for board in board_list.values()])
             self._uids = [board.uid for board in board_list.values()]
             self.setCurrentIndex(self._uids.index(selected_board))
-

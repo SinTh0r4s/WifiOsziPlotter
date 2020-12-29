@@ -34,9 +34,9 @@ class PlotEvents:
         if uid in PlotEvents._plots and len(PlotEvents._plots[uid]) > 0:
             plot = PlotEvents._plots[uid][-1]
             PlotEvents._selected_plot = (uid, plot.timestamp)
-            PlotEvents.update_plot(plot)
+            PlotEvents._update_listeners(plot)
         else:
-            PlotEvents.update_plot(None)
+            PlotEvents._update_listeners(None)
 
     @classmethod
     def update_selected_plot(cls, timestamp: float) -> None:
