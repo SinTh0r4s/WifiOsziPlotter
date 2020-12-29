@@ -3,3 +3,4 @@ numpy==1.19.3
 pyinstaller
 PyQt5
 pytest
+scipy
