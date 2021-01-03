@@ -43,7 +43,6 @@ class PlotCanvas(FigureCanvasQTAgg):
                 num_samples = len(plot)
                 sample_time, sample_time_unit = get_timesteps_readable(num_samples / visible_plot.frequency)
                 timestamps = np.linspace(0, 1, num_samples) * sample_time
-                print(num_samples)
                 ax.plot(timestamps, plot)
             ax.set_xlabel(sample_time_unit)
             ax.set_ylabel("mV")
