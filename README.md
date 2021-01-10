@@ -1,5 +1,7 @@
 # WifiOszi
 
+### PROJECT
+
 This repository provides the code for the PC Frontend of the WifiOszo PRoject. This project is intended to provide
 basic oscilloscope access to unknown GND potentials without the risk of destroying a 20k gadget.
 
