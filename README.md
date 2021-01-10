@@ -43,3 +43,7 @@ Further, you can package the code into a single .exe file or a folder of an .exe
 the first is best for handling, the latter has significant fast load time.
 
 As development environment i can reccomend PyCharm by JetBrains. Simply open the repositories folder and run main.py.
+
+### DEVELOPMENT
+
+To speed up the process of understanding the code please read [this brief overview](https://gitlab.lrz.de/wifioszi/pyplotter/-/blob/master/docs/Application_design_philosophy.md)
