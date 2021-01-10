@@ -29,7 +29,7 @@ class SampleGroup:
     def add_packet(self, header: SampleTransmissionHeader) -> bool:
         if not self._header.same_transmission_group(header):
             return False
-        samples_per_channel = self._header.num_samples / self._header.channels
+        samples_per_channel = header.num_samples / self._header.channels
         if samples_per_channel is float:
             print("Fatal error: received data is misaligned")
         samples_per_channel = floor(samples_per_channel)

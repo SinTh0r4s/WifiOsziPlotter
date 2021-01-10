@@ -36,11 +36,12 @@ class PlotCanvas(FigureCanvasQTAgg):
         if visible_plot is not None:
             ax = self.figure.add_subplot(111)
             ax.set_title("Samples taken at " + get_timestamp_readable(visible_plot.timestamp))
-            sample_time, sample_time_unit = get_timesteps_readable(visible_plot.num_samples / visible_plot.frequency)
+            sample_time_unit = "s"
+            sample_time = 1
             for channel in visible_plot.channels:
                 plot = visible_plot.channels[channel]
                 num_samples = len(plot)
-
+                sample_time, sample_time_unit = get_timesteps_readable(num_samples / visible_plot.frequency)
                 timestamps = np.linspace(0, 1, num_samples) * sample_time
                 ax.plot(timestamps, plot)
             ax.set_xlabel(sample_time_unit)
