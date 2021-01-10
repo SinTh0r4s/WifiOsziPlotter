@@ -7,12 +7,12 @@ basic oscilloscope access to unknown GND potentials without the risk of destroyi
 
 Any board will announce itself automatically to the application and will appear as possibility in the board selector
 on the top left. The rest of the application will always referrence to the selected board. Any board will also announce
-its capabilities which are listed in the board information right below the board selector.
+its capabilities which are listed in the board information right below the board selector.  
 In the bottom left you can set a trigger for a specific channel and voltage. As soon as the trigger is hit the board
 will fill its available RAM with measurements and, as soon as that is done, transmit those measurements to the
 application. Incoming measurements will always be rendered as soon as they arrive. Technically it is possible for
 transmissions to be corrupted (UDP) which will lead to the application not receiving any measurements. If a trigger
-was hit and you don't get any measurements please try again. Should be a very rare case though.
+was hit and you don't get any measurements please try again. Should be a very rare case though.  
 On the right hand side you can select all the measurement sets you received from the selected board. The data is
 only deleted once the application is closed. So you can try multiple measurements and only export the one of interest.
 I hope this gadget will save someone some time.
@@ -20,7 +20,7 @@ I hope this gadget will save someone some time.
 ### SETUP
 
 To run the code in this repository you need to provide a Python 3.7 installation. You are free to try other versions,
-but at the time of development Python 3.10 did not work so don't expect it to.
+but at the time of development Python 3.10 did not work so don't expect it to.  
 For Windows users there are 4 scripts in this repository to fulfill certain setup duties. If those scripts won't work
 the most likely cause is a wrong Python version or a missing PATH entry. If the scripts won't work on windows, open
 a Command Promp (cmd.exe) and enter `python --version`. It should reply with `Python 3.7.X`.
