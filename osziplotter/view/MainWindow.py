@@ -7,7 +7,8 @@ from osziplotter.view.PlotComboBox import PlotComboBox
 from osziplotter.view.PlotWidget import PlotWidget
 from osziplotter.view.TriggerCommandWidget import TriggerCommandWidget
 
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy,\
+    QPushButton, QApplication
 from PyQt5.QtCore import QTimer
 
 
@@ -45,6 +46,10 @@ class MainWindow(QMainWindow):
         self._plot_toolbar_layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Expanding))
         self._plot_toolbar_export_widget = ExportWidget()
         self._plot_toolbar_layout.addWidget(self._plot_toolbar_export_widget)
+        self._plot_toolbar_about_button = QPushButton(self)
+        self._plot_toolbar_about_button.clicked.connect(QApplication.aboutQt)
+        self._plot_toolbar_about_button.setText("About Qt")
+        self._plot_toolbar_layout.addWidget(self._plot_toolbar_about_button)
         self._plot_layout.addLayout(self._plot_toolbar_layout)
         self._plot_plot_widget = PlotWidget()
         self._plot_layout.addWidget(self._plot_plot_widget)
