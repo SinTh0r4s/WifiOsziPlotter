@@ -1,3 +1,5 @@
+from osziplotter.modelcontroller.Enums import Domain
+
 import numpy as np
 from time import time
 from typing import Dict
@@ -13,6 +15,7 @@ class PlotInfo:
         self.frequency: int = 0
         self.board_uid: int = 0
         self.num_samples: int = 0
+        self.domain: str = Domain.time
 
     # scipy.io.savemat cannot resolve recursive dictionaries so the data is packed into a list
     def to_dict(self) -> Dict:

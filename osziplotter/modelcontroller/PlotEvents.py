@@ -44,6 +44,12 @@ class PlotEvents:
         PlotEvents._selected_plot = (uid, timestamp)
         PlotEvents._update_listeners(PlotEvents._plots[uid][timestamp])
 
+    @classmethod
+    def update_plot_domain(cls, domain: str):
+        uid, timestamp = PlotEvents._selected_plot
+        PlotEvents._plots[uid][timestamp].domain = domain
+        PlotEvents.update_selected_plot(timestamp)
+
     # Overwrite this method if you want to react on it
     def update_plot(self, plots: Dict[float, PlotInfo], visible_plot: PlotInfo = None) -> None:
         pass

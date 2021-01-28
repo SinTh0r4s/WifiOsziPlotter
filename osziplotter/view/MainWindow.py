@@ -4,10 +4,11 @@ from osziplotter.view.BoardComboBox import BoardComboBox
 from osziplotter.view.BoardInfoLabel import BoardInfoLabel
 from osziplotter.view.ExportWidget import ExportWidget
 from osziplotter.view.PlotComboBox import PlotComboBox
+from osziplotter.view.PlotSettings import PlotSettings
 from osziplotter.view.PlotWidget import PlotWidget
 from osziplotter.view.TriggerCommandWidget import TriggerCommandWidget
 
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy, QLabel
 from PyQt5.QtCore import QTimer
 
 
@@ -42,6 +43,9 @@ class MainWindow(QMainWindow):
         self._plot_toolbar_layout = QHBoxLayout()
         self._plot_toolbar_plot_combo_box = PlotComboBox()
         self._plot_toolbar_layout.addWidget(self._plot_toolbar_plot_combo_box)
+        self._plot_toolbar_layout.addWidget(QLabel("in"))
+        self._plot_toolbar_plot_settings = PlotSettings()
+        self._plot_toolbar_layout.addWidget(self._plot_toolbar_plot_settings)
         self._plot_toolbar_layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Expanding))
         self._plot_toolbar_export_widget = ExportWidget()
         self._plot_toolbar_layout.addWidget(self._plot_toolbar_export_widget)

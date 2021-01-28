@@ -1,5 +1,6 @@
 from osziplotter.modelcontroller.PlotEvents import PlotEvents
 from osziplotter.modelcontroller.PlotInfo import PlotInfo
+from osziplotter.modelcontroller.Enums import Domain
 from osziplotter.Util import get_timestamp_readable, get_timesteps_readable
 
 from PyQt5.QtWidgets import QWidget, QSizePolicy, QVBoxLayout
@@ -43,9 +44,13 @@ class PlotCanvas(FigureCanvasQTAgg):
                 num_samples = len(plot)
                 sample_time, sample_time_unit = get_timesteps_readable(num_samples / visible_plot.frequency)
                 timestamps = np.linspace(0, 1, num_samples) * sample_time
-                ax.plot(timestamps, plot)
-            ax.set_xlabel(sample_time_unit)
-            ax.set_ylabel("mV")
-            ax.set_xlim(0, sample_time)
-            ax.set_ylim(0, visible_plot.v_ref)
+                if visible_plot.domain == Domain.time:
+                    ax.plot(timestamps, plot)
+                elif visible_plot.domain == Domain.frequency:
+                    ax.magnitude_spectrum(plot, Fs=visible_plot.frequency)
+            if visible_plot.domain == Domain.time:
+                ax.set_xlabel(sample_time_unit)
+                ax.set_ylabel("mV")
+                ax.set_xlim(0, sample_time)
+                ax.set_ylim(0, visible_plot.v_ref)
             self.draw()
