@@ -8,7 +8,8 @@ from osziplotter.view.PlotSettings import PlotSettings
 from osziplotter.view.PlotWidget import PlotWidget
 from osziplotter.view.TriggerCommandWidget import TriggerCommandWidget
 
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy, QLabel
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QFrame, QSpacerItem, QSizePolicy, QLabel,\
+    QPushButton, QApplication
 from PyQt5.QtCore import QTimer
 
 
