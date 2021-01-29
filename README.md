@@ -21,6 +21,8 @@ I hope this gadget will save someone some time.
 
 ### SETUP
 
+Connect your device to the same WiFi network the OsziClient will connect to.
+
 To run the code in this repository you need to provide a Python 3.7 installation. You are free to try other versions,
 but at the time of development Python 3.10 did not work so don't expect it to.  
 For Windows users there are 4 scripts in this repository to fulfill certain setup duties. If those scripts won't work

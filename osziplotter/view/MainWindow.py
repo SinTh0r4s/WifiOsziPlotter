@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
         self._plot_toolbar_layout = QHBoxLayout()
         self._plot_toolbar_plot_combo_box = PlotComboBox()
         self._plot_toolbar_layout.addWidget(self._plot_toolbar_plot_combo_box)
-        self._plot_toolbar_layout.addWidget(QLabel("in"))
+        self._plot_toolbar_layout.addWidget(QLabel("over"))
         self._plot_toolbar_plot_settings = PlotSettings()
         self._plot_toolbar_layout.addWidget(self._plot_toolbar_plot_settings)
         self._plot_toolbar_layout.addItem(QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Expanding))
